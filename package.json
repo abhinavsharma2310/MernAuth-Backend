@@ -6,7 +6,9 @@
   
 
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1" , 
+    "build": "npm install && echo 'No build step required'" ,
+    "start": "node server.js"
   },
   "author": "Abhinav sharma",
   "license": "ISC",
