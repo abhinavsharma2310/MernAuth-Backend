@@ -2,14 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const allowedOrigins = ["http://localhost:5173"]; // ✅ Removed trailing slash
-
 const app = express();
 
 // ✅ Correct CORS setup
+const allowedOrigins = [
+  "http://localhost:5173", // Local development
+  "https://mern-auth-frontend-delta.vercel.app", // Deployed frontend on Vercel
+];
+
 app.use(
   cors({
-    origin: allowedOrigins, 
+    origin: allowedOrigins,
     credentials: true, // ✅ Allow cookies/sessions
   })
 );
