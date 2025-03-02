@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const transporter = require("../config/nodemailer");
 require("dotenv/config");
 const userAuth = require("../middleware/userAuth");
-
+const {EMAIL_VERIFY_TEMPLATE ,PASSWORD_RESET_TEMPLATE } = require('../config/emailTemplate')
 //REGISTER
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -22,6 +22,7 @@ const register = async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      
       expiresIn: "7d",
     });
 
@@ -110,9 +111,9 @@ const sendVerifyOtp = async (req, res) => {
     const mailOptions = {
       from: process.env.SENDER_EMAIL,
       to: user.email,
-      subject: "Account Verification Otp",
-      text: `welcome to falcon website .Your OTP IS :${otp}.
-      Verify your account using this Otp.`,
+      subject: "Account Verification OTP",
+      text: `Welcome to Falcon website. Your OTP is: ${otp}. Verify your account using this OTP.`,
+      html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email),
     };
     await transporter.sendMail(mailOptions);
     res.json({ success: true, message: "Account verified" });
@@ -185,12 +186,11 @@ const sendResetOtp = async (req, res) => {
         from: process.env.SENDER_EMAIL,
         to: user.email,
         subject: "Password Reset OTP",
-        text: `Welcome to Falcon website. Your OTP is: ${otp}.
-        Verify your account using this OTP.`,
-      };
+        // text: `Welcome to Falcon website. Your OTP is: ${otp}.
+        // Verify your account using this OTP.`,
+        html: PASSWORD_RESET_TEMPLATE .replace("{{otp}}" , otp).replace("{{email}}" ,user.email)      };
   
       await transporter.sendMail(mailOptions);
-  
       res.json({ success: true, message: "Reset OTP sent" });
     } catch (error) {
       console.error("Error sending OTP:", error);
